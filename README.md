@@ -1,5 +1,7 @@
 # Lazy Loading Image
 
+## Part 1
+
 ### Abstract
 
 In this mini-series consisting of two posts I will build a _React Component Image_ which, using **custom hooks**, shows a low-resolution image that is immediately replaced when the high-resolution counterpart is completely downloaded. In the second phase, I will take care of postponing the download of the second only when the component becomes visible.
@@ -173,6 +175,162 @@ Given the very little use of the network in this demo, to make the effect more a
 - disable cache
 
 Finally, it is true that compared to a simple `<img />` with a single source, `<Image />` requires a few more bytes to be downloaded (AKA the low-resolution image). However, it's a small price to pay for a better UX, it's so true?
+
+---
+
+## Part 2
+
+### Recap
+
+In the previous post I built a React component Image that receives two sources, one for a low resolution version of the image and one for the high resolution one. Shows the former, which is promptly replaced by the latter as soon as its download is complete.
+
+### Abstract
+
+A further performance improvement is to start the download of the high resolution image only when the component is in view.
+Still with a view to **modern React**, I build a custom hook which, having received a ref associated with an HTML element, uses the **IntersectionObserver API** to evaluate if the element is in view
+
+### Process
+
+I add the hook in the appropriate folder built previously
+
+```bash
+touch src/hooks/useIntersectionObserver.js
+```
+
+The **IntersectionObserver** must be instantiated in a `useEffect` whose execution depends on the` elementRef` that the hook receives as an argument. This is necessary for the functionality of the hook to be responsive if a different ref is conditionally provided during use
+
+One way to proceed is to bind the **IntersectionObserver** to a `ref` declared in the hook itself. In this way, at the unmount of the component using the hook, React will take care of the clean up of the aforementioned `ref`
+
+In the **IntersectionObserver** callback it is sufficient to set the entry that is observed. This makes it easy to find outside the `useEffect`
+
+###### useIntersectionObserver.js
+
+```js
+import { useRef, useEffect, useState } from 'react'
+
+const useIntersectionObserver = elementRef => {
+  const observer = useRef()
+  const [entry, setEntry] = useState()
+
+  const options = {
+    threshold: 0.1,
+    root: null,
+    rootMargin: '0%',
+  }
+
+  const updateEntry = entries => {
+    setEntry(entries[0])
+  }
+
+  useEffect(() => {
+    const node = elementRef?.current
+    if (!node) return
+
+    if (observer.current) observer.current.disconnect()
+
+    observer.current = new IntersectionObserver(updateEntry, options)
+
+    const { current: currentObserver } = observer
+
+    currentObserver.observe(node)
+
+    return () => currentObserver.disconnect()
+  }, [elementRef])
+
+  return { isVisible: !!entry?.isIntersecting, entry }
+}
+
+export default useIntersectionObserver
+```
+
+A _boolean_ is returned indicating the presence or absence of the component in the view
+
+> There are two `observer.current.disconnect ()`. The first is executed only if the observer was already active but under observation on a different `elementRef`. In the second case, the disconnection occurs in the clean up phase of the `useEffect` which, by extension, uniquely corresponds to the moment in which the component that makes use of the hook is removed from the DOM
+
+<a></a>
+
+> For the purposes of this demo the hook always refers to the whole view. However, it is not difficult to take a second `options` argument and pass it into the ** IntersectionObserver ** instance (remember to add it to the` useEffect` dependencies)
+
+---
+
+The use in the `<Image>` component (the same as in the previous post) is immediate. I declare a ref (`imageRef`) and bind it to the root element of the component (` div.wrapper`). The same ref is supplied to the `useIntersectionObserver` hook which returns `isVisible`
+
+Conditionally showing the second `<img>` tag, that is the one associated with the high resolution image, you will get that the feature implemented in the previous post is used only when the element enters view. In the meantime the user is shown the low resolution image
+
+###### Image.js (\* per indicare le modifiche dal precedente)
+
+```jsx
+import { useRef } from 'react'
+import useImageOnLoad from '../hooks/useImageOnLoad'
+import useIntersectionObserver from '../hooks/useIntersectionObserver'
+
+const Image = ({ width = '100%', height = '100%', lowResSrc, highResSrc }) => {
+  const { handleImageOnLoad, transitionStyles } = useImageOnLoad()
+
+  const imageRef = useRef() // *
+  const { isVisible } = useIntersectionObserver(imageRef) // *
+
+  const styles = {
+    wrapper: {
+      position: 'relative',
+      width,
+      height,
+    },
+    image: {
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      objectPosition: 'center center',
+      objectFit: 'cover',
+    },
+  }
+
+  const lowResStyle = {
+    ...styles.image,
+    ...transitionStyles.lowRes,
+  }
+  const hightResStyle = {
+    ...styles.image,
+    ...transitionStyles.highRes,
+  }
+
+  return (
+    <div style={styles.wrapper} ref={imageRef}>
+      <img src={lowResSrc} style={lowResStyle} />
+      {isVisible && ( // *
+        <img
+          src={highResSrc}
+          style={hightResStyle}
+          onLoad={handleImageOnLoad}
+        />
+      )}
+    </div>
+  )
+}
+
+export default Image
+```
+
+The simplest way to check if the desired effect is present is to move the image outside the view
+
+###### App.js (detail)
+
+```jsx
+<div style={{ position: 'relative', height: '200vh' }}>
+  <div style={{ position: 'absolute', bottom: 0 }}>
+    <ImageIO
+      width={600}
+      height={400}
+      lowResSrc={srcTuple[0]}
+      highResSrc={srcTuple[1]}
+    />
+  </div>
+</div>
+```
+
+From the Network tab of the Developer Tools you can see how the low resolution image download is performed as soon as possible. On the other hand, that of the high resolution image is started only when the component is in view
+
+![intersection observer demo](/demo/demo-intersection-observer.gif)
 
 ---
 

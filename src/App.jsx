@@ -1,4 +1,4 @@
-import Image from './components/Image'
+import ImageIO from './components/ImageIO'
 
 const srcTupleFunny = [
   'https://i.ebayimg.com/images/g/nGQAAOSwHoFe4Kb3/s-l300.jpg',
@@ -11,18 +11,18 @@ const srcTupleSerious = [
 ]
 
 const App = () => {
-  const srcTuple = srcTupleFunny
+  const srcTuple = srcTupleSerious
 
   return (
     <div style={{ position: 'relative', height: '200vh' }}>
-      {/* <div style={{ position: 'absolute', bottom: 0 }}> */}
-      <Image
-        width={600}
-        height={400}
-        lowResSrc={srcTuple[0]}
-        highResSrc={srcTuple[1]}
-      />
-      {/* </div> */}
+      <div style={{ position: 'absolute', bottom: 0 }}>
+        <ImageIO
+          width={600}
+          height={400}
+          lowResSrc={srcTuple[0]}
+          highResSrc={srcTuple[1]}
+        />
+      </div>
     </div>
   )
 }
