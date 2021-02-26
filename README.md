@@ -182,12 +182,12 @@ Finally, it is true that compared to a simple `<img />` with a single source, `<
 
 ### Recap
 
-In the previous post I built a React component Image that receives two sources, one for a low resolution version of the image and one for the high resolution one. Shows the former, which is promptly replaced by the latter as soon as its download is complete.
+In the previous post, I built a React component Image that receives two sources, one for a low-resolution version of the image and one for the high-resolution one. Shows the former, which is promptly replaced by the latter as soon as its download is complete.
 
 ### Abstract
 
-A further performance improvement is to start the download of the high resolution image only when the component is in view.
-Still with a view to **modern React**, I build a custom hook which, having received a ref associated with an HTML element, uses the **IntersectionObserver API** to evaluate if the element is in view
+A further performance improvement is to start the download of the high-resolution image only when the component is in view.
+Still, with a view to **modern React**, I build a custom hook which, having received a ref associated with an HTML element, uses the **IntersectionObserver API** to evaluate if the element is in view
 
 ### Process
 
@@ -245,7 +245,7 @@ export default useIntersectionObserver
 
 A _boolean_ is returned indicating the presence or absence of the component in the view
 
-> There are two `observer.current.disconnect ()`. The first is executed only if the observer was already active but under observation on a different `elementRef`. In the second case, the disconnection occurs in the clean up phase of the `useEffect` which, by extension, uniquely corresponds to the moment in which the component that makes use of the hook is removed from the DOM
+> There are two `observer.current.disconnect ()`. The first is executed only if the observer was already active but under observation on a different `elementRef`. In the second case, the disconnection occurs in the cleanup phase of the `useEffect` which, by extension, uniquely corresponds to the moment in which the component that makes use of the hook is removed from the DOM
 
 <a></a>
 
@@ -255,7 +255,7 @@ A _boolean_ is returned indicating the presence or absence of the component in t
 
 The use in the `<Image>` component (the same as in the previous post) is immediate. I declare a ref (`imageRef`) and bind it to the root element of the component (` div.wrapper`). The same ref is supplied to the `useIntersectionObserver` hook which returns `isVisible`
 
-Conditionally showing the second `<img>` tag, that is the one associated with the high resolution image, you will get that the feature implemented in the previous post is used only when the element enters view. In the meantime the user is shown the low resolution image
+Conditionally showing the second `<img>` tag, that is the one associated with the high-resolution image, you will get that the feature implemented in the previous post is used only when the element enters view. In the meantime, the user is shown the low-resolution image
 
 ###### Image.js (\* per indicare le modifiche dal precedente)
 
@@ -328,17 +328,12 @@ The simplest way to check if the desired effect is present is to move the image 
 </div>
 ```
 
-From the Network tab of the Developer Tools you can see how the low resolution image download is performed as soon as possible. On the other hand, that of the high resolution image is started only when the component is in view
+From the Network tab of the Developer Tools, you can see how the low-resolution image download is performed as soon as possible. On the other hand, that of the high-resolution image is started only when the component is in view
 
 ![intersection observer demo](/demo/demo-intersection-observer.gif)
 
 ---
 
-Thanks for reading, continue to the next post (work in progress)
-
-Repo [here](https://github.com/didof/lazy-loading-with-hooks)
-
 If you like it, let's get in touch
-[GitHub](https://github.com/didof/)
 [Twitter](https://twitter.com/did0f)
 [Linkedin](https://www.linkedin.com/in/francesco-di-donato-2a9836183/)
