@@ -1,8 +1,8 @@
 import ImageIO from './components/ImageIO'
 
-const srcTupleFunny = [
-  'https://i.ebayimg.com/images/g/nGQAAOSwHoFe4Kb3/s-l300.jpg',
-  'https://media1.tenor.com/images/aa2ae6319d58764aa8efaefaa61f8da7/tenor.gif',
+const srcTuplePulp = [
+  'https://static.hollywoodreporter.com/sites/default/files/2015/02/pulp_fiction_a_h.jpg',
+  'https://media.giphy.com/media/6uGhT1O4sxpi8/giphy.gif',
 ]
 
 const srcTupleSerious = [
@@ -11,7 +11,7 @@ const srcTupleSerious = [
 ]
 
 const App = () => {
-  const srcTuple = srcTupleSerious
+  const srcTuple = srcTuplePulp
 
   return (
     <div style={{ position: 'relative', height: '200vh' }}>

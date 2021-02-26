@@ -164,7 +164,7 @@ export default Image
 
 ---
 
-![funny demo](/demo/demo-funny.gif)
+![pulp fiction demo](/demo/demo-pulp.gif)
 
 Considerations:
 
