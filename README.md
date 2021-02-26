@@ -2,32 +2,30 @@
 
 ### Abstract
 
-In this mini series consisting of two posts I will build a _React Component Image_ which, using **custom hooks**, shows a low resolution image that is immediately replaced when the high resolution counterpart is completely downloaded. In a second phase I will take care of postponing the download of the second only when the component becomes visible.
+In this mini-series consisting of two posts I will build a _React Component Image_ which, using **custom hooks**, shows a low-resolution image that is immediately replaced when the high-resolution counterpart is completely downloaded. In the second phase, I will take care of postponing the download of the second only when the component becomes visible.
 
-Immagine
+![demo](/demo/demo-serious.gif)
 
 ### Show me
 
-Repo
-
-Link netlify
+Repo [here](https://github.com/didof/lazy-loading-with-hooks)
 
 ### Table of content
 
-1. Low Resolution & High Resolution
-2. High Resolution only when is visible
+1. Low-resolution & High Resolution
+2. High-resolution only when is visible
 
 ---
 
-## Low Resolution & High Resolution
+## Low-resolution & High-resolution
 
 #### Concept
 
-The rendering of a high resolution image can take - especially for slow connections - several seconds. This lack of readiness results in _worse UX_.
+The rendering of a high-resolution image can take - especially for slow connections - several seconds. This lack of readiness results in _worse UX_.
 
-In this post I deal with solving the problem by building a component that in addition to the high resolution image source receives one for the low resolution image to be shown as a replacement until the first is fully downloaded and available.
+In this post, I deal with solving the problem by building a component that in addition to the high-resolution image source receives one for the low-resolution image to be shown as a replacement until the first is fully downloaded and available.
 
-In the next post I will take care of postponing the download of the high resolution image only when the component becomes visible within the view. Regardless, the user will not see a missing image as the relative low resolution will already be present.
+In the next post, I will take care of postponing the download of the high-resolution image only when the component becomes visible within the view. Regardless, the user will not see a missing image as the relative low resolution will already be present.
 
 #### Process
 
@@ -94,16 +92,16 @@ const srcTuple = [
 />
 ```
 
-At this point on the screen there is the image related to `srcTuple[0]` (the low resolution source) because that is what the style wants. For the replacement to occur, it is necessary to be able to intervene when the download of the high resolution image is completed.
+At this point on the screen, there is the image related to `srcTuple[0]` (the low-resolution source) because that is what the style wants. For the replacement to occur, it is necessary to be able to intervene when the download of the high-resolution image is completed.
 
-To do this I can use the `onLoad` method of the`<img>`attribute. The explanatory name indicates when it is performed.
+To do this I can use the `onLoad` method of the`<img>` attribute. The explanatory name indicates when it is performed.
 
 The question remains of what to actually make it perform.
 
 ---
 
 With a view to **modern React**, I decided to opt for a **custom hook**.
-It must keep track of the state of the image loading and on the basis of it return a style that leads to a pleasant transition between the two images of the component. To do this it must expose a method which will be associated with the `onLoad` method.
+It must keep track of the state of the image loading and on the basis of it return a style that leads to a pleasant transition between the two images of the component. To do this it must expose a method that will be associated with the `onLoad` method.
 
 ```bash
 mkdir src/hooks
@@ -164,7 +162,7 @@ export default Image
 
 ---
 
-// mettere gif
+![funny demo](/demo/demo-funny.gif)
 
 Considerations:
 
@@ -174,4 +172,15 @@ Given the very little use of the network in this demo, to make the effect more a
 - simulate throttling in the Network tab of the Developer Tools
 - disable cache
 
-Finally, it is true that compared to a simple `<img />` with a single source, `<Image />` requires a few more bytes to be downloaded (AKA the low resolution image). However, it's a small price to pay for a better UX, it's so true?
+Finally, it is true that compared to a simple `<img />` with a single source, `<Image />` requires a few more bytes to be downloaded (AKA the low-resolution image). However, it's a small price to pay for a better UX, it's so true?
+
+---
+
+Thanks for reading, continue to the next post (work in progress)
+
+Repo [here](https://github.com/didof/lazy-loading-with-hooks)
+
+If you like it, let's get in touch
+[GitHub](https://github.com/didof/)
+[Twitter](https://twitter.com/did0f)
+[Linkedin](https://www.linkedin.com/in/francesco-di-donato-2a9836183/)
