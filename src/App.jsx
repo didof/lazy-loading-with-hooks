@@ -16,7 +16,7 @@ const App = () => {
   return (
     <div style={{ position: 'relative', height: '200vh' }}>
       <div style={{ position: 'absolute', bottom: 0 }}>
-        <ImageIO
+        <Image
           width={600}
           height={400}
           lowResSrc={srcTuple[0]}
